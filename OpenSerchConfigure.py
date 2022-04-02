@@ -40,7 +40,7 @@ def get_all_vpcs():
     """
     return [vpc.id for vpc in list(ec2.vpcs.all())]
 
-
+## FS - dual functinality 
 def get_flow_log_group(pattern="flow-logs-group", retention_perion=14):
     """
     check if the group already exist and use it if existed. But if the group not exist - create a new one.
@@ -70,7 +70,7 @@ def get_flow_log_group(pattern="flow-logs-group", retention_perion=14):
         print(f"New log group is created - {log_group_name}")
         return log_group_name
 
-
+## FS - dual dunctinality - means dual functions 
 def get_flow_logs_policy(pattern="flow-logs-policy"):
     """
     Check for log policy. create one if not exist.
@@ -91,7 +91,7 @@ def get_flow_logs_policy(pattern="flow-logs-policy"):
         print(f"New policy is created - {flow_logs_policy['Policy']['Arn']}")
         return flow_logs_policy["Policy"]["Arn"]
 
-
+## FS - pattern argument not in use
 def get_role_attached_flow_log_policy(role, pattern="flow-logs-policy"):
     """
     Check if the policy is attached to the role. Attach it of not.

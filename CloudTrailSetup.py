@@ -5,6 +5,7 @@ from pprint import pprint
 import boto3
 from botocore.exceptions import ClientError
 
+##FS -in real case it's better to build json files from scrakh, in our case you can keep it for now 
 policy_trust_document = json.dumps({
     "Version": "2012-10-17",
     "Statement": [
@@ -82,7 +83,7 @@ def set_bucket_policies(cloudtrail_policy, bucket_name='yoavs-cloudtrailbucket',
     """
     # Todo: Check if exists already (nothing happens if it is)
     s3_client = boto3.client("s3")
-
+    ##FS - in case that you would be used json format, any edits will get better look
     cloudtrail_policy = cloudtrail_policy.replace('my_AccountID', account_id)
     cloudtrail_policy = cloudtrail_policy.replace('my_region', s3_client.meta.region_name)
     cloudtrail_policy = cloudtrail_policy.replace('my_BucketName', bucket_name)
@@ -92,7 +93,7 @@ def set_bucket_policies(cloudtrail_policy, bucket_name='yoavs-cloudtrailbucket',
         response = s3_client.put_bucket_policy(
             Bucket=bucket_name, Policy=cloudtrail_policy
         )
-        pprint(response)
+        pprint(response) ## FS - always prefer to use logging library 
         # checking bucket status. This should show us s3 bucket has logs policy
     except ClientError as e:
         print('CloudTrail policy failed')
@@ -116,7 +117,7 @@ def list_bucket_policies(bucket_name='yoavs-cloudtrailbucket'):
         # The bucket policy does not exist
         print("No policy attached to this bucket")
 
-
+## FS - This function has double functinality, which is not recomended 
 def get_cloudtrail_logs_policy(pattern="nubosec-cloudtrail-role-policy"):
     """
     Check for log policy. create one if not exist.
@@ -141,12 +142,12 @@ def get_cloudtrail_logs_policy(pattern="nubosec-cloudtrail-role-policy"):
         except Exception as err:
             print(err)
 
-
+## FS - function name doesn't match with acuall use, this function returns the first log group desribe argument
 def get_flow_log_group(pattern="flow-logs-group"):
     """
     check if the group already exist and use it if existed. But if the group not exist - create a new one.
     :param pattern: name of the group
-    :return:
+    :return: 
     """
     log_client = boto3.client("logs")
     # Check if log group exist. Use it.
@@ -157,7 +158,7 @@ def get_flow_log_group(pattern="flow-logs-group"):
             return log_group
     return None
 
-
+## FS - function name doesn't match with acuall use, you create here double functinality
 def get_cloudtrail_log_role_arn(log_group_name, pattern="nubosec-cloudtrail-logs"):
     """
     Create a new role if current one missing. Attach Policy when needed.
@@ -213,12 +214,12 @@ def create_trail_logs():
     else:
         print("No group or role")
 
-
+## FS - Let's talk about diffarent possible structuers 
 if __name__ == '__main__':
     iam_client = boto3.client("iam")
     client = boto3.client('cloudtrail')
     region = boto3.Session().region_name
-    account_id = boto3.client('sts').get_caller_identity()['Account']
+    account_id = boto3.client('sts').get_caller_identity()['Account'] 
 
     # list_bucket_policies()
     set_bucket_policies(cloudtrail_logs_bucket_policy)
